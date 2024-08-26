@@ -1,12 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from 'convex/react';
 import { api } from '~/convex/_generated/api';
-import { convex } from '~/provider/convex-client-provider';
 
 export const useGetWorkspaces = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['workspaces'],
-    queryFn: () => convex.query(api.workspaces.get),
-  });
+  const data = useQuery(api.workspaces.get);
+  const isLoading = data === undefined;
 
   return {
     data,
