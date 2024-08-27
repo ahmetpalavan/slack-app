@@ -1,54 +1,34 @@
-import { useMutation } from 'convex/react';
-import { useCallback, useMemo, useState } from 'react';
+import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { api } from '~/convex/_generated/api';
 import { Id } from '~/convex/_generated/dataModel';
+import { convex } from '~/provider/convex-client-provider';
 
 type RequestType = { name: string };
 type ResponseType = Id<'workspaces'> | null;
 
-type Options = {
-  onSuccess?: (data: ResponseType) => void;
-  onError?: (error: Error) => void;
-  onSettled?: () => void;
-  throwError?: boolean;
-};
-
 export function useCreateWorkspace() {
-  const [data, setData] = useState<ResponseType>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [status, setStatus] = useState<'pending' | 'success' | 'error' | 'settled' | null>(null);
+  const router = useRouter();
+  const queryClient = new QueryClient();
 
-  const isPending = useMemo(() => status === 'pending', [status]);
-  const isSuccess = useMemo(() => status === 'success', [status]);
-  const isError = useMemo(() => status === 'error', [status]);
-  const isSettled = useMemo(() => status === 'settled', [status]);
-
-  const mutation = useMutation(api.workspaces.create);
-
-  const mutate = useCallback(
-    async (values: RequestType, options?: Options) => {
-      try {
-        setData(null);
-        setError(null);
-        setStatus('pending');
-
-        const res = await mutation(values);
-        options?.onSuccess?.(res);
-        setData(res);
-        return res;
-      } catch (error) {
-        options?.onError?.(error as Error);
-
-        if (options?.throwError) {
-          throw error;
-        }
-      } finally {
-        setStatus('settled');
-        options?.onSettled?.();
-      }
+  const { data, mutate, isPending, error, isError, isSuccess } = useMutation({
+    mutationFn: async (args: RequestType) => {
+      return await convex.mutation(api.workspaces.create, { name: args.name });
     },
-    [mutation]
-  );
+    onSuccess: (res: ResponseType) => {
+      toast.success('Workspace created');
+      router.push(`/workspace/${res}`);
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to create workspace');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['getWorkspace'],
+      });
+    },
+  });
 
-  return { mutate, isPending, isSuccess, isError, isSettled, data, error };
+  return { data, mutate, isPending, error, isError, isSuccess };
 }
