@@ -1,13 +1,14 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { UserAvatar } from '~/features/auth/components/user-avatar';
 import { useGetWorkspaces } from '~/features/workspaces/api/use-get-workspaces';
 import { useCreateWorkspacesModal } from '~/features/workspaces/store/use-create-workspaces-modal';
 
 export default function Home() {
+  const router = useRouter();
   const { data, isLoading } = useGetWorkspaces();
-  console.log('🚀 ~ Home ~ data:', data);
   const { open, isOpen } = useCreateWorkspacesModal();
 
   const workspacesId = useMemo(() => {
@@ -19,11 +20,11 @@ export default function Home() {
     if (isLoading) return;
 
     if (workspacesId) {
-      console.log('workspacesId', workspacesId);
+      router.replace(`/workspace/${workspacesId}`);
     } else if (!isOpen) {
       open();
     }
-  }, [workspacesId, isLoading, isOpen, open]);
+  }, [workspacesId, isLoading, isOpen, open, router]);
 
   return (
     <div className='h-full flex items-center justify-center bg-[#5C3B58]'>

@@ -15,11 +15,13 @@ export const create = mutation({
 
     const joinCode = '123456';
 
-    return await ctx.db.insert('workspaces', {
+    const workspaceId = await ctx.db.insert('workspaces', {
       name: args.name,
       joinCode,
       userId,
     });
+
+    return workspaceId;
   },
 });
 
