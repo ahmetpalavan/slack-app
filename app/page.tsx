@@ -20,11 +20,11 @@ export default function Home() {
     if (isLoading) return;
 
     if (workspacesId) {
-      router.replace(`/workspace/${workspacesId}`);
-    } else if (!isOpen) {
+      router.push(`/workspace/${workspacesId}`);
+    } else {
       open();
     }
-  }, [workspacesId, isLoading, isOpen, open, router]);
+  }, [workspacesId, isOpen, open, router]);
 
   return (
     <div className='h-full flex items-center justify-center bg-[#5C3B58]'>
