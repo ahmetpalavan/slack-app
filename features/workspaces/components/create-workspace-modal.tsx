@@ -7,12 +7,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '~/components/ui/input';
 import { useCreateWorkspace } from '../api/use-create-workspace';
 import { useCreateWorkspacesModal } from '../store/use-create-workspaces-modal';
+import { toast } from 'sonner';
 
 export default function CreateWorkspaceModal() {
   const router = useRouter();
   const [name, setName] = useState<string>('');
   const { isOpen, close } = useCreateWorkspacesModal();
-  const { mutate, isPending, data } = useCreateWorkspace();
+  const { mutate, isPending } = useCreateWorkspace();
 
   const handleClose = useCallback(() => {
     close();
@@ -22,26 +23,21 @@ export default function CreateWorkspaceModal() {
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      await mutate(
+      if (!name) return;
+      mutate(
         { name },
         {
-          onSuccess: (id) => {
-            router.push(`/workspace/${id}`);
+          onSuccess: () => {
+            handleClose();
           },
           onError: () => {
-            console.log('error');
-          },
-          onSettled: () => {
-            console.log('settled');
+            toast.error('Failed to create workspace');
           },
         }
       );
-      close();
     },
-    [mutate, close]
+    [mutate, close, name, router]
   );
-
-  console.log(name, isPending, data);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

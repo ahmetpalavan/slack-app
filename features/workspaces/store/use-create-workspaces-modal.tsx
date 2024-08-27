@@ -8,6 +8,10 @@ interface CreateWorkspacesModalState {
 
 export const useCreateWorkspacesModal = create<CreateWorkspacesModalState>((set) => ({
   isOpen: false,
-  open: () => set({ isOpen: true }),
-  close: () => set({ isOpen: false }),
+  open: () => {
+    set({ isOpen: true });
+  },
+  close: () => {
+    set({ isOpen: false });
+  },
 }));

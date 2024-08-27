@@ -11,9 +11,12 @@ export const UserAvatar = () => {
   const { isLoading, user } = useCurrentUser();
 
   if (isLoading) {
-    return <Loader2 className='size-4 animate-spin text-muted-foreground' />;
+    return (
+      <div className='relative size-10'>
+        <Loader2 className='absolute inset-0 m-auto size-4 animate-spin text-muted-foreground' />
+      </div>
+    );
   }
-
   if (!user) {
     return null;
   }
