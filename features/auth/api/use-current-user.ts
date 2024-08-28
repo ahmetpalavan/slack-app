@@ -1,9 +1,9 @@
-import { useQuery } from 'convex/react';
 import { api } from '~/convex/_generated/api';
+import { convexQuery } from '@convex-dev/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const useCurrentUser = () => {
-  const data = useQuery(api.users.current);
-  const isLoading = data === undefined;
+  const { data, isLoading } = useQuery(convexQuery(api.users.current, {}));
 
   return {
     user: data,
