@@ -20,7 +20,7 @@ export const WorkspaceSwitcher = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button className='size-9 relative overflow-hidden bg-[#ABABAB] hover:bg-[#ABABAB]/80 text-slate-900 font-bold'>
           {workspaceLoading ? <Loader2 className='size-5 shrink-0 animate-spin' /> : workspace?.name.charAt(0).toUpperCase()}
         </Button>
@@ -38,12 +38,15 @@ export const WorkspaceSwitcher = () => {
         {filtredWorkspaces?.map((w) => (
           <DropdownMenuItem
             key={w._id}
-            className='cursor-pointer capitalize'
+            className='cursor-pointer capitalize overflow-hidden'
             onClick={() => {
               router.push(`/workspace/${w._id}`);
             }}
           >
-            {w.name.charAt(0).toUpperCase()}
+            <div className='w-8 h-8 mr-2 shrink-0 rounded-md flex items-center justify-center bg-[#ABABAB] text-slate-900 font-bold'>
+              {w.name.charAt(0).toUpperCase()}
+            </div>
+            <p className='truncate'>{w.name}</p>
           </DropdownMenuItem>
         ))}
         <DropdownMenuItem
@@ -52,7 +55,7 @@ export const WorkspaceSwitcher = () => {
             open();
           }}
         >
-          <Plus className='size-4 mr-2' />
+          <Plus className='size-8 mr-2 bg-[#F2F2F2] text-slate-800 text-lg rounded-md flex items-center justify-center font-bold' />
           Create new workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
