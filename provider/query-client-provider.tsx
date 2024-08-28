@@ -5,9 +5,13 @@ import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-quer
 import React from 'react';
 import { convex } from './convex-client-provider';
 
-const convexQueryClient = new ConvexQueryClient(convex);
+type Props = {
+  children: React.ReactNode;
+};
 
-function makeQueryClient() {
+export default function Providers({ children }: Props) {
+  const convexQueryClient = new ConvexQueryClient(convex);
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -17,26 +21,6 @@ function makeQueryClient() {
     },
   });
   convexQueryClient.connect(queryClient);
-  return queryClient;
-}
-
-let browserQueryClient: QueryClient | undefined = undefined;
-
-function getQueryClient() {
-  if (isServer) {
-    return makeQueryClient();
-  } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
-    return browserQueryClient;
-  }
-}
-
-type Props = {
-  children: React.ReactNode;
-};
-
-export default function Providers({ children }: Props) {
-  const queryClient = getQueryClient();
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
