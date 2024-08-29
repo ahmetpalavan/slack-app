@@ -9,7 +9,9 @@ export const useDeleteWorkspace = () => {
   const convexMutation = useConvexMutation(api.workspaces.remove);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (variables: RequestType) => convexMutation(variables),
+    mutationFn: async (variables: RequestType) => {
+      return await convexMutation(variables);
+    },
   });
 
   return { mutate, isPending };
