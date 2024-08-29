@@ -5,3 +5,6 @@ export * from './sidebar';
 export * from './workspace-sidebar';
 export * from './workspace-header';
 export * from './preference-modal';
+export * from './sidebar-item';
+export * from './workspace-section';
+export * from './user-item';
