@@ -7,6 +7,33 @@ const generateCode = () => {
   return code;
 };
 
+export const newJoinCode = mutation({
+  args: {
+    id: v.id('workspaces'),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const member = await ctx.db
+      .query('members')
+      .withIndex('by_user_id_and_workspace_id', (q) => q.eq('userId', userId).eq('workspaceId', args.id))
+      .unique();
+
+    if (!member || member.role !== 'admin') {
+      throw new Error('Unauthorized');
+    }
+
+    const joinCode = generateCode();
+
+    await ctx.db.patch(args.id, { joinCode });
+
+    return joinCode;
+  },
+});
+
 export const create = mutation({
   args: {
     name: v.string(),
