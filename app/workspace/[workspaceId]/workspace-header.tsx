@@ -11,6 +11,7 @@ import {
 import { Doc } from '~/convex/_generated/dataModel';
 import { PreferenceModal } from './preference-modal';
 import { useState } from 'react';
+import { InviteModal } from './invite-modal';
 
 interface WorkspaceHeaderProps {
   workspace: Doc<'workspaces'>;
@@ -19,8 +20,10 @@ interface WorkspaceHeaderProps {
 
 export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [openInvite, setOpenInvite] = useState<boolean>(false);
   return (
     <>
+      <InviteModal name={workspace.name} joinCode={workspace.joinCode} open={openInvite} setOpen={setOpenInvite} />
       <PreferenceModal initialValue={workspace.name} open={open} setOpen={setOpen} />
       <div className='flex items-center justify-between px-4 h-12 gap-0.5'>
         <DropdownMenu>
@@ -43,7 +46,9 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
             {isAdmin && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className='cursor-pointer'>Invite people to {workspace.name}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setOpenInvite(true)} className='cursor-pointer'>
+                  Invite people to {workspace.name}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setOpen(true)} className='cursor-pointer'>
                   Preferences

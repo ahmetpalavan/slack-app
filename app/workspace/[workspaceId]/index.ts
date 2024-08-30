@@ -8,3 +8,4 @@ export * from './preference-modal';
 export * from './sidebar-item';
 export * from './workspace-section';
 export * from './user-item';
+export * from './invite-modal';
