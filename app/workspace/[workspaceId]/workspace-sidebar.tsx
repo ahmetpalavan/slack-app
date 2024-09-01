@@ -7,8 +7,10 @@ import { SidebarItem, UserItem, WorkspaceHeader, WorkspaceSection } from './inde
 import { useGetChannels } from '~/features/channels/api/use-get-channels';
 import { useGetMembers } from '~/features/members/api/use-get-members';
 import { useCreateChannelModal } from '~/features/channels/store/use-create-channel-modal';
+import { useChannelId } from '~/hooks/use-channel-id';
 
 export const WorkspaceSidebar = () => {
+  const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const { open } = useCreateChannelModal();
   const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
@@ -19,7 +21,7 @@ export const WorkspaceSidebar = () => {
   if (memberLoading || workspaceLoading) {
     return (
       <div className='flex items-center bg-[#5e2c5f] flex-col justify-center h-full'>
-        <Loader2 className='size-5 animate-spin text-white' />
+        <Loader2 className='size-6 animate-spin text-muted-foreground' />
       </div>
     );
   }
@@ -46,7 +48,7 @@ export const WorkspaceSidebar = () => {
               icon={Hash}
               id={channel._id}
               label={channel.name}
-              variant={channel._id === 'general' ? 'active' : 'default'}
+              variant={channelId === channel._id ? 'active' : 'default'}
             />
           ))}
         </WorkspaceSection>
