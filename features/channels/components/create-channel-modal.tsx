@@ -5,8 +5,11 @@ import { Button } from '~/components/ui/button';
 import { useCallback, useState } from 'react';
 import { useCreateChannel } from '../api/use-create-channel';
 import { useWorkspaceId } from '~/hooks/use-workspace-id';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export const CreateChannelModal = () => {
+  const router = useRouter();
   const { isOpen, close } = useCreateChannelModal();
   const workspaceId = useWorkspaceId();
   const [name, setName] = useState<string>('');
@@ -25,9 +28,19 @@ export const CreateChannelModal = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      mutate({ name, workspaceId });
-      setName('');
-      close();
+      mutate(
+        { name, workspaceId },
+        {
+          onSuccess: (id) => {
+            router.push(`/workspace/${workspaceId}/channel/${id}`);
+            toast.success('Channel created');
+            handleClose();
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
     },
     [mutate, name]
   );
