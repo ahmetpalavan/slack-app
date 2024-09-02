@@ -93,7 +93,7 @@ body,
 .ql-editor {
   line-height: 22px !important;
   padding: 8px 12px !important;
-  color: #333 !important;
+  color: #1d1c1d !important;
   font-weight: 400 !important;
   font-family: 'Lato', sans-serif !important;
   font-size: 14px !important;
@@ -111,12 +111,11 @@ body,
   padding: 0 !important;
 }
 
-.ql-renderer::before {
+.ql-editor:before {
   left: 12px !important;
   font-family: 'Lato' sans-serif !important;
   color: #333 !important;
   font-size: 14px !important;
   font-weight: 400 !important;
-  font-style: normal !important;
   @apply truncate;
 }
