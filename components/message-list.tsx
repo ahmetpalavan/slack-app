@@ -6,6 +6,7 @@ import { ChannelHero } from './channel-hero';
 import { Message } from './message';
 import { useWorkspaceId } from '~/hooks/use-workspace-id';
 import { useCurrentMember } from '~/features/members/api/use-current-member';
+import { Loader2 } from 'lucide-react';
 
 interface MessageListProps {
   memberName?: string;
@@ -13,7 +14,7 @@ interface MessageListProps {
   channelName?: string;
   channelCreationTime?: number;
   variant?: 'channel' | 'thread' | 'conversation';
-  messages: GetMessagesReturnType | undefined;
+  messages: GetMessagesReturnType | undefined | null;
   loadMore: () => void;
   isLoadingMore: boolean;
   canLoadMore: boolean;
@@ -82,7 +83,8 @@ export const MessageList = ({
               <Message
                 key={message._id}
                 id={message._id}
-                memberId={message.memberId}
+                reactions={message.reactions}
+                memberId={message?.memberId}
                 authorImage={message.user.image}
                 authorName={message.user.name}
                 isAuthor={message.memberId === data?._id}
@@ -101,6 +103,32 @@ export const MessageList = ({
           })}
         </div>
       ))}
+
+      <div
+        className='h-1'
+        ref={(el) => {
+          if (el) {
+            const observer = new IntersectionObserver(
+              ([entries]) => {
+                if (entries.isIntersecting && canLoadMore) {
+                  loadMore();
+                }
+              },
+              { threshold: 1 }
+            );
+            observer.observe(el);
+            return () => observer.disconnect();
+          }
+        }}
+      />
+      {isLoadingMore && (
+        <div className='text-center my-2 relative'>
+          <hr className='absolute top-1/2 left-0 right-0 border-t border-gray-300' />
+          <span className='relative inline-block px-4 py-1 bg-white text-gray-500 text-xs font-semibold'>
+            <Loader2 className='size-4 animate-spin' />
+          </span>
+        </div>
+      )}
       {variant === 'channel' && channelName && channelCreationTime && <ChannelHero name={channelName} creationTime={channelCreationTime} />}
     </div>
   );
