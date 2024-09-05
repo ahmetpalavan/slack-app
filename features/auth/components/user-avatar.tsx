@@ -41,6 +41,7 @@ export const UserAvatar = () => {
         <DropdownMenuItem className='text-sm text-muted-foreground'>{email}</DropdownMenuItem>
         <DropdownMenuItem onClick={signOut} className='text-sm text-red-600 hover:text-red-700 h-10'>
           <LogOut className='size-4 mr-2' />
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
