@@ -13,7 +13,7 @@ export const Header = ({ memberImage, memberName, onClick }: HeaderProps) => {
 
   return (
     <>
-      <div className='flex items-center h-12 px-4 overflow-hidden border-b'>
+      <div className='flex items-center px-6 py-3 overflow-hidden border-b'>
         <Button
           size='sm'
           onClick={onClick}

@@ -1,23 +1,23 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import React from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '~/components/ui/resizable';
-import { WorkspaceSidebar } from './workspace-sidebar';
-import { Toolbar, Sidebar } from './index';
-import { usePanel } from '~/hooks/use-panel';
-import { Loader2 } from 'lucide-react';
-import Renderer from '~/components/renderer';
-import { Thread } from '~/features/messages/components/thread';
 import { Id } from '~/convex/_generated/dataModel';
+import { Thread } from '~/features/messages/components/thread';
+import { usePanel } from '~/hooks/use-panel';
+import { Sidebar, Toolbar } from './index';
+import { WorkspaceSidebar } from './workspace-sidebar';
+import { Profile } from '~/features/members/components/profile';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { parentMessageId, openParentMessage, closeParentMessage } = usePanel();
+  const { parentMessageId, closeParentMessage, profileMemberId } = usePanel();
 
-  const showPanel = !!parentMessageId;
+  const showPanel = !!parentMessageId || !!profileMemberId;
 
   return (
     <div className='h-full'>
@@ -40,6 +40,8 @@ const Layout = ({ children }: LayoutProps) => {
                   <div className='flex flex-col h-full'>
                     <Thread messageId={parentMessageId as Id<'messages'>} onClose={closeParentMessage} />
                   </div>
+                ) : profileMemberId ? (
+                  <Profile memberId={profileMemberId as Id<'members'>} onClose={closeParentMessage} />
                 ) : (
                   <div className='flex justify-center items-center h-full'>
                     <Loader2 className='animate-spin text-muted-foreground size-5' />
