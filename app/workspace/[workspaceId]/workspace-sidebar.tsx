@@ -1,15 +1,16 @@
 import { Hash, Loader2, MessageSquareText, SendHorizonal, TriangleAlert } from 'lucide-react';
-import React from 'react';
+import { useGetChannels } from '~/features/channels/api/use-get-channels';
+import { useCreateChannelModal } from '~/features/channels/store/use-create-channel-modal';
 import { useCurrentMember } from '~/features/members/api/use-current-member';
+import { useGetMembers } from '~/features/members/api/use-get-members';
 import { useGetWorkspace } from '~/features/workspaces/api/use-get-workspace';
+import { useChannelId } from '~/hooks/use-channel-id';
+import { useMemberId } from '~/hooks/use-member-id';
 import { useWorkspaceId } from '~/hooks/use-workspace-id';
 import { SidebarItem, UserItem, WorkspaceHeader, WorkspaceSection } from './index';
-import { useGetChannels } from '~/features/channels/api/use-get-channels';
-import { useGetMembers } from '~/features/members/api/use-get-members';
-import { useCreateChannelModal } from '~/features/channels/store/use-create-channel-modal';
-import { useChannelId } from '~/hooks/use-channel-id';
 
 export const WorkspaceSidebar = () => {
+  const memberId = useMemberId();
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const { open } = useCreateChannelModal();
@@ -53,7 +54,15 @@ export const WorkspaceSidebar = () => {
           ))}
         </WorkspaceSection>
         <WorkspaceSection hint='New Direct Messages' label='Direct Messages' onNew={() => {}}>
-          {members?.map((member) => <UserItem key={member._id} id={member._id} image={member.user?.image} label={member.user?.name} />)}
+          {members?.map((member) => (
+            <UserItem
+              variant={member._id === memberId ? 'active' : 'default'}
+              key={member._id}
+              id={member._id}
+              image={member.user?.image}
+              label={member.user?.name}
+            />
+          ))}
         </WorkspaceSection>
       </div>
     </div>
