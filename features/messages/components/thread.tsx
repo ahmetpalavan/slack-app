@@ -156,8 +156,6 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
     return format(date, 'EEEE, MMMM d');
   };
 
-  //anlık olarak mesajları gösterme
-
   return (
     <div className='flex flex-col h-full'>
       <div className='flex justify-between items-center px-6 py-3  border-b'>
@@ -197,6 +195,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
                   isEditing={editingId === message._id}
                   setEditingId={setEditingId}
                   isCompact={isCompact}
+                  threadName={message.threadName}
                   hideThreadButton
                   createdAt={message._creationTime}
                   threadCount={message.threadCount}
