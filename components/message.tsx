@@ -13,6 +13,7 @@ import { useConfirm } from '~/hooks/use-confirm';
 import { useCallback } from 'react';
 import { useToggleReaction } from '~/features/reactions/api/use-toggle-reaction';
 import { Reactions } from './reactions';
+import { usePanel } from '~/hooks/use-panel';
 
 interface MessageProps {
   id: Id<'messages'>;
@@ -35,7 +36,7 @@ interface MessageProps {
   setEditingId: (id: Id<'messages'> | null) => void;
   isCompact?: boolean;
   hideThreadButton?: boolean;
-  threadCount: number;
+  threadCount?: number;
   threadImage?: string;
   threadTimestamp?: string;
 }
@@ -62,6 +63,8 @@ export const Message = ({
   threadImage,
   threadTimestamp,
 }: MessageProps) => {
+  const { openParentMessage, closeParentMessage, parentMessageId } = usePanel();
+
   const formatFulltime = (date: Date) => {
     return `${isToday(new Date(date)) ? 'Today' : isYesterday(new Date(date)) ? 'Yesterday' : format(new Date(date), 'MMM d yyyy')} at ${format(new Date(date), 'h:mm:ss a')}`;
   };
@@ -112,6 +115,9 @@ export const Message = ({
         {
           onSuccess: () => {
             toast.success('Message deleted');
+            if (parentMessageId === id) {
+              closeParentMessage();
+            }
           },
           onError: () => {
             toast.error('Failed to delete message');
@@ -166,7 +172,7 @@ export const Message = ({
               isPending={false}
               handleEdit={() => setEditingId(id)}
               handleDelete={handleDelete}
-              handleThread={() => {}}
+              handleThread={() => openParentMessage(id)}
               hideThreadButton={hideThreadButton}
             />
           )}
@@ -228,7 +234,7 @@ export const Message = ({
             isPending={false}
             handleEdit={() => setEditingId(id)}
             handleDelete={handleDelete}
-            handleThread={() => {}}
+            handleThread={() => openParentMessage(id)}
             hideThreadButton={hideThreadButton}
           />
         )}

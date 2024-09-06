@@ -19,7 +19,6 @@ interface ReactionsProps {
 }
 
 export const Reactions = ({ data, onChange }: ReactionsProps) => {
-  console.log(data);
   const workspaceId = useWorkspaceId();
 
   const { data: currentMember } = useCurrentMember({ workspaceId });
