@@ -1,19 +1,20 @@
 import { format, isToday, isYesterday } from 'date-fns';
 import dynamic from 'next/dynamic';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { Doc, Id } from '~/convex/_generated/dataModel';
+import { useDeleteMessage } from '~/features/messages/api/use-delete-message';
+import { useUpdateMessage } from '~/features/messages/api/use-update-message';
+import { useToggleReaction } from '~/features/reactions/api/use-toggle-reaction';
+import { useConfirm } from '~/hooks/use-confirm';
+import { usePanel } from '~/hooks/use-panel';
+import { cn } from '~/lib/utils';
 import { Hint } from './hint';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Reactions } from './reactions';
+import { ThreadBar } from './thread-bar';
 import { Thumbnail } from './thumbnail';
 import { Toolbar } from './toolbar';
-import { useUpdateMessage } from '~/features/messages/api/use-update-message';
-import { toast } from 'sonner';
-import { cn } from '~/lib/utils';
-import { useDeleteMessage } from '~/features/messages/api/use-delete-message';
-import { useConfirm } from '~/hooks/use-confirm';
-import { useCallback } from 'react';
-import { useToggleReaction } from '~/features/reactions/api/use-toggle-reaction';
-import { Reactions } from './reactions';
-import { usePanel } from '~/hooks/use-panel';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface MessageProps {
   id: Id<'messages'>;
@@ -37,6 +38,7 @@ interface MessageProps {
   isCompact?: boolean;
   hideThreadButton?: boolean;
   threadCount?: number;
+  threadName?: string;
   threadImage?: string;
   threadTimestamp?: string;
 }
@@ -60,10 +62,11 @@ export const Message = ({
   isCompact,
   hideThreadButton,
   threadCount,
+  threadName,
   threadImage,
   threadTimestamp,
 }: MessageProps) => {
-  const { openParentMessage, closeParentMessage, parentMessageId } = usePanel();
+  const { openParentMessage, closeParentMessage, parentMessageId, openProfile } = usePanel();
 
   const formatFulltime = (date: Date) => {
     return `${isToday(new Date(date)) ? 'Today' : isYesterday(new Date(date)) ? 'Yesterday' : format(new Date(date), 'MMM d yyyy')} at ${format(new Date(date), 'h:mm:ss a')}`;
@@ -150,7 +153,7 @@ export const Message = ({
                 <Editor
                   onSubmit={handleUpdate}
                   defaultValue={JSON.parse(body)}
-                  disabled={pendingMessage}
+                  disabled={pendingMessage || pendingReaction}
                   onCancel={() => setEditingId(null)}
                   placeholder='Type a message'
                   variant='update'
@@ -162,6 +165,13 @@ export const Message = ({
                 <Thumbnail image={image} />
                 {updatedAt ? <div className='text-xs text-muted-foreground'>(edited)</div> : null}
                 <Reactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  name={threadName}
+                  count={threadCount}
+                  image={threadImage}
+                  timestamp={new Date(createdAt).getTime()}
+                  onClick={() => openParentMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -194,7 +204,7 @@ export const Message = ({
         )}
       >
         <div className='flex items-start gap-2'>
-          <button>
+          <button onClick={() => openProfile(memberId)}>
             <Avatar className='rounded-md'>
               <AvatarImage className='rounded-md' src={authorImage} alt={authorName} />
               <AvatarFallback className='rounded-md bg-sky-500 text-white text-xs'>{avatarFallback}</AvatarFallback>
@@ -205,7 +215,7 @@ export const Message = ({
               <Editor
                 onSubmit={handleUpdate}
                 defaultValue={JSON.parse(body)}
-                disabled={pendingMessage}
+                disabled={pendingMessage || pendingReaction}
                 onCancel={() => setEditingId(null)}
                 placeholder='Type a message'
                 variant='update'
@@ -214,7 +224,9 @@ export const Message = ({
           ) : (
             <div className='flex flex-col w-full overflow-hidden'>
               <div className='text-xs'>
-                <button className='font-bold text-primary hover:underline'>{authorName}</button>
+                <button onClick={() => openProfile(memberId)} className='font-bold text-primary hover:underline'>
+                  {authorName}
+                </button>
                 <span>&nbsp;·&nbsp;</span>
                 <Hint label={formatFulltime(new Date(createdAt))}>
                   <button className='text-muted-foreground'>{format(new Date(createdAt), 'h:mm a')}</button>
@@ -224,6 +236,13 @@ export const Message = ({
               <Thumbnail image={image} />
               {updatedAt ? <div className='text-xs text-muted-foreground'>(edited)</div> : null}
               <Reactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                name={threadName}
+                count={threadCount}
+                image={threadImage}
+                timestamp={new Date(createdAt).getTime()}
+                onClick={() => openParentMessage(id)}
+              />
             </div>
           )}
         </div>
