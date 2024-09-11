@@ -49,7 +49,7 @@ const WorkspaceIdPage = () => {
 
   return (
     <div className='flex items-center justify-center h-full'>
-      <TriangleAlert className='size-5 animate-spin text-muted-foreground' />
+      <TriangleAlert className='size-5 text-muted-foreground' />
       <span>Redirecting...</span>
     </div>
   );
