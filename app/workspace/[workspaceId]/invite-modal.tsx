@@ -47,7 +47,7 @@ export const InviteModal = ({ joinCode, name, open, setOpen }: InviteModalProps)
       .catch(() => {
         toast.error('Failed to copy to clipboard');
       });
-  }, [joinCode, workspaceId]);
+  }, [workspaceId]);
 
   return (
     <>

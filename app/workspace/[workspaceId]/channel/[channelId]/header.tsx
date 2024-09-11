@@ -41,7 +41,7 @@ export const Header = ({ title }: HeaderProps) => {
       if (data?.role !== 'admin') return;
       setEditOpen(value);
     },
-    [title, data?.role]
+    [data?.role]
   );
 
   const handleSubmit = useCallback(
