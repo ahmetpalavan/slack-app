@@ -1,5 +1,6 @@
 import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import type { Metadata } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google';
 import { ConvexClientProvider } from '~/provider/convex-client-provider';
 import { Modals } from '~/provider/modal-provider';
@@ -28,6 +29,7 @@ export default function RootLayout({
               <Toaster />
               <Modals />
               {children}
+              <SpeedInsights />
             </Providers>
           </ConvexClientProvider>
         </body>
