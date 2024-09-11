@@ -59,7 +59,6 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
       { id: memberId },
       {
         onSuccess: () => {
-          console.log('🚀 ~ onRemove ~ memberId:', memberId);
           toast.success('Member removed successfully');
           onClose();
         },
@@ -85,8 +84,8 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
           toast.success('Left workspace successfully');
           onClose();
         },
-        onError: (error: any) => {
-          toast.error(error.message);
+        onError: () => {
+          toast.error('Failed to leave workspace');
         },
       }
     );
