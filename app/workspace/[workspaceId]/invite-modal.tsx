@@ -35,7 +35,7 @@ export const InviteModal = ({ joinCode, name, open, setOpen }: InviteModalProps)
         },
       }
     );
-  }, [workspaceId]);
+  }, [workspaceId, confirm, mutate]);
 
   const handleCopy = useCallback(() => {
     const url = `${window.location.origin}/join/${workspaceId}`;
@@ -47,7 +47,7 @@ export const InviteModal = ({ joinCode, name, open, setOpen }: InviteModalProps)
       .catch(() => {
         toast.error('Failed to copy to clipboard');
       });
-  }, [joinCode]);
+  }, [joinCode, workspaceId]);
 
   return (
     <>

@@ -31,7 +31,7 @@ const MemberIdPage = () => {
         },
       }
     );
-  }, [memberId, workspaceId]);
+  }, [memberId, workspaceId, mutate]);
 
   if (isPending) {
     return (

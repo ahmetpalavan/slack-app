@@ -29,50 +29,53 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
   const { mutate: createMessage, isPending: messagePending } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
 
-  const handleSubmit = useCallback(async ({ body, image }: { body: string; image: File | null }) => {
-    try {
-      editorRef.current?.enable(false);
+  const handleSubmit = useCallback(
+    async ({ body, image }: { body: string; image: File | null }) => {
+      try {
+        editorRef.current?.enable(false);
 
-      const values: CreateMessageValues = {
-        body,
-        channelId,
-        image: undefined,
-        workspaceId,
-      };
+        const values: CreateMessageValues = {
+          body,
+          channelId,
+          image: undefined,
+          workspaceId,
+        };
 
-      if (image) {
-        const url = await generateUploadUrl({}, { throwError: true });
+        if (image) {
+          const url = await generateUploadUrl({}, { throwError: true });
 
-        if (!url) {
-          throw new Error('Failed to generate upload url');
+          if (!url) {
+            throw new Error('Failed to generate upload url');
+          }
+
+          const result = await fetch(url, {
+            method: 'POST',
+            body: image,
+            headers: {
+              'Content-Type': image.type,
+            },
+          });
+
+          if (!result.ok) {
+            toast.error(result.statusText);
+            throw new Error('Failed to upload image');
+          }
+
+          const { storageId } = await result.json();
+          values.image = storageId;
         }
 
-        const result = await fetch(url, {
-          method: 'POST',
-          body: image,
-          headers: {
-            'Content-Type': image.type,
-          },
-        });
+        await createMessage(values);
 
-        if (!result.ok) {
-          toast.error(result.statusText);
-          throw new Error('Failed to upload image');
-        }
-
-        const { storageId } = await result.json();
-        values.image = storageId;
+        setEditorKey((key) => key + 1);
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        editorRef.current?.enable(true);
       }
-
-      await createMessage(values);
-
-      setEditorKey((key) => key + 1);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      editorRef.current?.enable(true);
-    }
-  }, []);
+    },
+    [channelId, createMessage, generateUploadUrl, workspaceId]
+  );
 
   return (
     <div className='px-5 w-full'>

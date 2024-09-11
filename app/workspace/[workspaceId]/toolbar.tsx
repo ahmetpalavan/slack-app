@@ -58,7 +58,7 @@ export const Toolbar = () => {
             <CommandEmpty>No commands found</CommandEmpty>
             <CommandGroup heading='Suggesting'>
               {channels?.map((channel) => (
-                <CommandItem className='cursor-pointer' onSelect={() => onChannel(channel._id)}>
+                <CommandItem key={channel._id} className='cursor-pointer' onSelect={() => onChannel(channel._id)}>
                   {channel.name}
                 </CommandItem>
               ))}
@@ -66,7 +66,7 @@ export const Toolbar = () => {
             <CommandSeparator />
             <CommandGroup heading='suggesting' title='Frequently used'>
               {members?.map((member) => (
-                <CommandItem className='cursor-pointer' onSelect={() => onMember(member._id)}>
+                <CommandItem key={member._id} className='cursor-pointer' onSelect={() => onMember(member._id)}>
                   {member.user?.name}
                 </CommandItem>
               ))}

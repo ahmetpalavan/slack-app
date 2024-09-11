@@ -35,20 +35,23 @@ const JoinPage = ({ params }: JoinPageProps) => {
     }
   }, [isMember, workspaceId, router]);
 
-  const handleComplete = useCallback((code: string) => {
-    mutate(
-      { joinCode: code, workspaceId },
-      {
-        onSuccess: (id) => {
-          router.replace(`/workspace/${id}`);
-          toast.success('Successfully joined workspace');
-        },
-        onError: (error) => {
-          toast.error(error.message);
-        },
-      }
-    );
-  }, []);
+  const handleComplete = useCallback(
+    (code: string) => {
+      mutate(
+        { joinCode: code, workspaceId },
+        {
+          onSuccess: (id) => {
+            router.replace(`/workspace/${id}`);
+            toast.success('Successfully joined workspace');
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
+    },
+    [mutate, workspaceId, router]
+  );
 
   if (isLoading) {
     return (

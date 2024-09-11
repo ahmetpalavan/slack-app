@@ -41,7 +41,7 @@ export const Header = ({ title }: HeaderProps) => {
       if (data?.role !== 'admin') return;
       setEditOpen(value);
     },
-    [title]
+    [title, data?.role]
   );
 
   const handleSubmit = useCallback(
@@ -60,7 +60,7 @@ export const Header = ({ title }: HeaderProps) => {
         }
       );
     },
-    [updateChannel, value]
+    [updateChannel, value, channelId]
   );
 
   const handleDelete = useCallback(async () => {
@@ -79,7 +79,7 @@ export const Header = ({ title }: HeaderProps) => {
         }
       );
     }
-  }, [deleteChannel, onConfirm]);
+  }, [deleteChannel, onConfirm, channelId, workspaceId, router]);
 
   return (
     <>

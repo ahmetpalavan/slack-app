@@ -89,7 +89,7 @@ export const Message = ({
         }
       );
     },
-    [id]
+    [id, toggleReaction]
   );
 
   const handleUpdate = useCallback(
@@ -107,7 +107,7 @@ export const Message = ({
         }
       );
     },
-    [id]
+    [id, setEditingId, updateMessage]
   );
 
   const handleDelete = useCallback(async () => {
@@ -128,7 +128,7 @@ export const Message = ({
         }
       );
     }
-  }, [id]);
+  }, [id, onConfirm, deleteMessage, parentMessageId, closeParentMessage]);
 
   if (isCompact) {
     return (
